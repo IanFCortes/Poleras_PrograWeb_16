@@ -5,6 +5,4 @@ from django.shortcuts import render
 
 @method_secutir
 def poleravender():
-    asklfj
-    aslkfjasfkj
-    )(kjpath polera.html)
+    pass
