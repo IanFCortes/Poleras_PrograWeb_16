@@ -1,0 +1,79 @@
+# Python __pycache__ y archivos compilados
+*.py[cod]
+__pycache__/
+*.so
+
+# Archivos de entorno virtual
+venv/
+env/
+ENV/
+.venv/
+
+# Archivos de configuración de IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de migración (opcional, generalmente se recomienda versionarlos)
+# Si decides ignorar las migraciones, descomenta la siguiente línea:
+# */migrations/
+
+# Archivos de configuración específicos del entorno
+*.local
+
+# Archivos de credenciales y configuraciones sensibles
+.env
+.env.*
+
+# Archivos de caché
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.pid
+*.gz
+*.zip
+*.egg
+*.egg-info
+*.egg-info/
+dist/
+build/
+*.bak
+*.backup
+
+# Archivos de cobertura de tests
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+__pycache__/
+
+# Archivos de medios subidos por los usuarios
+media/
+
+# Archivos estáticos generados
+staticfiles/
+static/
+
+# Archivos de logs
+*.log
+
+# Archivos generados por Jupyter Notebook
+.ipynb_checkpoints/
+
+# Ignorar archivos de configuración de Docker
+docker-compose.override.yml
+.dockerignore
+
+# Ignorar archivos de configuración de Heroku
+Procfile
