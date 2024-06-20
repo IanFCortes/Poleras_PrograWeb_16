@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import inicio, udechile, ucatolica, colocolo, huachipato, soporte, pago
+from .views import inicio, udechile, ucatolica, colocolo, huachipato, soporte, pago, registro
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -11,7 +11,8 @@ urlpatterns = [
     path('colocolo', colocolo, name="colocolo"),
     path('huachipato', huachipato, name="huachipato"),
     path('soporte', soporte, name="soporte"),
-    path('pago', pago, name="pago")
+    path('pago', pago, name="pago"),
+    path('registro/', registro, name='registro'),
 ]
 
 if settings.DEBUG :

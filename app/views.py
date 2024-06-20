@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from .forms import RegistroForm
 
 # Create your views here.
 
@@ -23,8 +25,19 @@ def soporte(request):
 def pago(request):
     return render(request,'app/acciones/pago.html')
 
+def registro(request):
+    if request.method == 'POST':
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('Inicio')  # Redirige a la página de inicio después del registro
+    else:
+        form = RegistroForm()
+    return render(request,'app/acciones/registro.html', {'form': form})  
 
-# def login_view(request):
+
+# def login_view(request): 
 #     mensaje = ""
 #     if request.method == 'POST':
 #         form = LoginForm(request.POST)
