@@ -1,0 +1,29 @@
+{% extends "app/admin/home.html" %}
+{% load static %}
+
+{% block adminprincipal %}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Administrar Equipos</h2>
+    <div class="mb-4 text-end">
+        <a href="{% url 'editar_equipo' %}" class="btn btn-success">Agregar Equipo</a>
+    </div>
+    <div class="row">
+        {% for equipo in equipos %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ equipo.logo.url }}" class="card-img-top" alt="{{ equipo.nombre }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ equipo.nombre }}</h5>
+                        <a href="{% url 'editar_equipo' equipo.pk %}" class="btn btn-primary">Editar</a>
+                        <form method="post" action="{% url 'eliminar_equipo' equipo.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "app/admin/home.html" %}
+{% load static %}
+
+{% block adminprincipal %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Administrar Usuarios</h2>
+        <div class="mb-4 text-end">
+            <a href="{% url 'registrar_usuario' %}" class="btn btn-success">Agregar Usuario</a>
+        </div>
+        <div class="row">
+            {% for usuario in usuarios %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ usuario.user.username }}</h5>
+                            <p class="card-text">Rut: {{ usuario.rut }}</p>
+                            <p class="card-text">Dirección: {{ usuario.direccion }}</p>
+                            <p class="card-text">Número Celular: {{ usuario.numero_celular }}</p>
+                            <p class="card-text">Fecha Nacimiento: {{ usuario.fecha_nacimiento }}</p>
+                            <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-primary">Editar</a>
+                            <form method="post" action="{% url 'eliminar_usuario' usuario.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

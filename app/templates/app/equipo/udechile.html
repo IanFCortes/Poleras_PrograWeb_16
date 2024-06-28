@@ -7,82 +7,21 @@
     <section class="contenedor">
         <!-- Contenedor de elementos -->
         <div class="contenedor-items">
+            {% for polera in poleras %}
             <div class="item">
-                <span class="titulo-item">Polera U. De Chile Original</span>
-                <img src="{% static 'img/camisetas_deportivas/udechile/Camiseta_udechile_azul.png' %}" alt="" class="img-item">
-                <span class="precio-item">$35.000</span>
-                <button class="boton-item">Agregar al Carrito</button>
-            </div>
-            <div class="item">
-                <span class="titulo-item">Polera U. De Chile Blanca</span>
-                <img src="{% static 'img/camisetas_deportivas/udechile/Camiseta_udechile_blanca.png' %}" alt="" class="img-item">
-                <span class="precio-item">$30.000</span>
-                <button class="boton-item">Agregar al Carrito</button>
-            </div>
-            <div class="item">
-                <span class="titulo-item">Polera U. De Chile Roja</span>
-                <img src="{% static 'img/camisetas_deportivas/udechile/Camiseta_udechile_roja.png' %}" alt="" class="img-item">
-                <span class="precio-item">$30.000</span>
-                <button class="boton-item">Agregar al Carrito</button>
-            </div>
-        </div>
-        <!-- Carrito de Compras -->
-        <div class="carrito" id="carrito">
-            <div class="header-carrito">
-                <h1>Tu Carrito</h1>
-            </div>
-
-            <div class="carrito-items">
-                <!-- 
-                <div class="carrito-item">
-                    <img src="{% static 'img/boxengasse.png' %}" width="80px" alt="">
-                    <div class="carrito-item-detalles">
-                        <span class="carrito-item-titulo">Box Engasse</span>
-                        <div class="selector-cantidad">
-                            <i class="fa-solid fa-minus restar-cantidad"></i>
-                            <input type="text" value="1" class="carrito-item-cantidad" disabled>
-                            <i class="fa-solid fa-plus sumar-cantidad"></i>
-                        </div>
-                        <span class="carrito-item-precio">$15.000,00</span>
-                    </div>
-                    <span class="btn-eliminar">
-                        <i class="fa-solid fa-trash"></i>
-                    </span>
+                    <span class="titulo-item">{{ polera.nombre }}</span>
+                    <img src="{{  polera.logo.url }}" alt="{{ polera.nombre }}" class="img-item">
+                    <span class="precio-item text-white">{{ polera.precio }}</span>
+                    <span class="precio-item text-white">{{ polera.talla }}</span>
+                    <button class="boton-item">Agregar al Carrito</button>
                 </div>
-                <div class="carrito-item">
-                    <img src="{% static 'img/skinglam.png' %}" width="80px" alt="">
-                    <div class="carrito-item-detalles">
-                        <span class="carrito-item-titulo">Skin Glam</span>
-                        <div class="selector-cantidad">
-                            <i class="fa-solid fa-minus restar-cantidad"></i>
-                            <input type="text" value="3" class="carrito-item-cantidad" disabled>
-                            <i class="fa-solid fa-plus sumar-cantidad"></i>
-                        </div>
-                        <span class="carrito-item-precio">$18.000,00</span>
-                    </div>
-                    <button class="btn-eliminar">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-                 -->
-            </div>
-            <div class="carrito-total">
-                <div class="fila">
-                    <strong>Tu Total</strong>
-                    <span class="carrito-precio-total">
-                        $120.000,00
-                    </span>
-                </div>
-                <button class="btn-pagar">Pagar <i class="fa-solid fa-bag-shopping"></i> </button>
-            </div>
+            {% endfor %}    
+        
         </div>
     </section>
 </body>
-<script src={% static "js/bootstrap.bundle.min.js" %}
-integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-crossorigin="anonymous"></script>
-<link href={% static "css/bootstrap.min.css" %} rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+<script src={% static "js/bootstrap.bundle.min.js" %}></script>
+<script src={% static "css/bootstrap.min.css" %}></script>
+<link rel="stylesheet" href="{% static 'css/estilo.css' %}">
 {% endblock %}
 </html>

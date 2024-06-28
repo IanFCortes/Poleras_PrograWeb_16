@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAGINA CAMISETAS DEPORTIVAS</title>
+    <style>
+        body {
+            background-image: url('{% static 'img/fondo.jpg' %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+        }
+    </style>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark navbar-expand-lg fondonavbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'Inicio' %}">
+                <img src="{% static 'img/ADVERSOS.png' %}" alt="Bootstrap" width="60" height="54">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-center">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'polera_admin' %}">Poleras</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'equipo_admin' %}">Equipos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'usuario_admin' %}">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Soporte</a>
+                    </li>
+                </ul>
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link  active" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <span class="mr-2 text-white">{{ user.username }}</span>
+                        <img src="{% static 'img/usuario.png' %}" width="60" alt="Usuario">
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <form class="d-flex">
+                    <a href="{% url 'login' %}" class="btn btncolor">Login</a>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% block adminprincipal %}
+
+    <div class="container text-center">
+        <h1 class="text-white">Bienvenido al apartado de ADMIN</h1>
+    </div>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-3 mb-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="{% static 'img/equipos/colo-colo-logo.png' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">EQUIPOS</h5>
+                        <p class="card-text">Agrega, elimina o edita a un equipo.</p>
+                        <a href="{% url 'equipo_admin' %}" class="btn btn-primary">Ir</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="{% static 'img/usuario.png' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">USUARIOS</h5>
+                        <p class="card-text">Agrega, elimina o edita a un usuario.</p>
+                        <a href="{% url 'usuario_admin' %}" class="btn btn-primary">Ir</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="{% static 'img/camisetas_deportivas/colo-colo/Camiseta_colo-colo_blanco.png' %}"
+                        class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">POLERAS</h5>
+                        <p class="card-text">Agrega, elimina o edita a una polera.</p>
+                        <a href="{% url 'polera_admin' %}" class="btn btn-primary">Ir</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 mb-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="{% static 'img/soporte_logo.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">SOPORTE</h5>
+                        <p class="card-text">Accede al apartado de Soporte</p>
+                        <a href="#" class="btn btn-primary">Ir</a>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'css/bootstrap.min.css' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    {% endblock %}
+</body>
+
+</html>

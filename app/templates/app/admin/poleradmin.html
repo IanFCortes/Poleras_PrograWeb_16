@@ -1,0 +1,42 @@
+{% extends "app/admin/home.html" %}
+{% load static %}
+
+{% block adminprincipal %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Administrar Poleras</h2>
+        <div class="mb-4">
+            <form method="get" class="d-flex justify-content-center">
+                <select name="equipo" class="form-select me-2" onchange="this.form.submit()">
+                    <option value="">Todos los Equipos</option>
+                    {% for equipo in equipos %}
+                        <option value="{{ equipo.id }}" {% if request.GET.equipo == equipo.id|stringformat:"s" %}selected{% endif %}>
+                            {{ equipo.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+        <div class="mb-4 text-end">
+            <a href="{% url 'editar_polera' %}" class="btn btn-success">Agregar Polera</a>
+        </div>
+        <div class="row">
+            {% for polera in poleras %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ polera.logo.url }}" class="card-img-top" alt="{{ polera.nombre }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ polera.nombre }}</h5>
+                            <p class="card-text">Precio: {{ polera.precio }}</p>
+                            <p class="card-text">Talla: {{ polera.talla }}</p>
+                            <a href="{% url 'editar_polera' polera.pk %}" class="btn btn-primary">Editar</a>
+                            <form method="post" action="{% url 'eliminar_polera' polera.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

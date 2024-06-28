@@ -1,5 +1,5 @@
 # PENDIENTE
-from .models import usuario, envio
+from .models import usuario, envio, polera, equipo, soporte, envio
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -37,6 +37,15 @@ class LoginForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 class EnvioForm(forms.ModelForm):
+    CIUDADES_CHOICES = [
+        ('Santiago', 'Santiago'),
+        ('Linares', 'Linares'),
+        ('Chillán', 'Chillán'),
+        # Añadir más opciones si es necesario
+    ]
+    
+    ciudad = forms.ChoiceField(choices=CIUDADES_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+
     class Meta:
         model = envio
         fields = ['direccion', 'ciudad', 'codigo_postal', 'pais', 'fecha_envio']
@@ -48,3 +57,45 @@ class EnvioForm(forms.ModelForm):
         self.fields['codigo_postal'].widget.attrs.update({'class': 'form-control'})
         self.fields['pais'].widget.attrs.update({'class': 'form-control'})
         self.fields['fecha_envio'].widget.attrs.update({'class': 'form-control', 'type': 'date'})
+
+class PoleraForm(forms.ModelForm):
+    class Meta:
+        model = polera
+        fields = ['nombre', 'precio', 'talla', 'equipo', 'logo']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'precio': forms.NumberInput(attrs={'class': 'form-control'}),
+            'talla': forms.TextInput(attrs={'class': 'form-control'}),
+            'equipo': forms.Select(attrs={'class': 'form-control'}),
+            'logo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+
+class EquipoForm(forms.ModelForm):
+    class Meta:
+        model = equipo
+        fields = ['nombre', 'logo']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'logo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+
+class UsuarioForm(forms.ModelForm):
+    class Meta:
+        model = usuario
+        fields = ['rut', 'direccion', 'numero_celular', 'fecha_nacimiento']
+        widgets = {
+            'rut': forms.TextInput(attrs={'class': 'form-control'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'numero_celular': forms.TextInput(attrs={'class': 'form-control'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+
+class SoporteForm(forms.ModelForm):
+    class Meta:
+        model = soporte
+        fields = ['titulo', 'mensaje']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el título del mensaje'}),
+            'mensaje': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese su mensaje', 'rows': 5}),
+        }
+
