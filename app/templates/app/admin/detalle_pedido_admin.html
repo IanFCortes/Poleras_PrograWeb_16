@@ -1,0 +1,48 @@
+{% extends "app/admin/home.html" %}
+{% load static %}
+
+{% block adminprincipal %}
+<div class="container mt-5">
+    <h1 class="mb-4">Detalles del Pedido #{{ pedido.id }}</h1>
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Información del Pedido</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Usuario:</strong> {{ pedido.usuario.username }}</p>
+            <p><strong>Fecha de Compra:</strong> {{ pedido.fecha_compra|date:"d/m/Y H:i" }}</p>
+            <p><strong>Total:</strong> ${{ pedido.total }}</p>
+
+            <h4 class="mt-4 mb-3">Items del Pedido</h4>
+            {% if items %}
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>{{ item.polera }}</td>
+                                <td>{{ item.cantidad }}</td>
+                                <td>${{ item.precio }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No hay ítems en este pedido.</p>
+            {% endif %}
+            
+            <a href="{% url 'ver_pedidos_admin' %}" class="btn btn-secondary mt-3">Volver a la lista de pedidos</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/estilo.css' %}">

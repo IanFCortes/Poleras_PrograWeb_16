@@ -3,6 +3,7 @@ from .models import usuario, envio, polera, equipo, soporte, envio
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.utils import timezone
 
 
 #class LoginForm(AuthenticationForm):
@@ -41,23 +42,28 @@ class EnvioForm(forms.ModelForm):
         ('Santiago', 'Santiago'),
         ('Linares', 'Linares'),
         ('Chillán', 'Chillán'),
-        # Añadir más opciones si es necesario
+        ('Concepción', 'Concepción'),
+        ('Temuco', 'Temuco'),
+        ('Valdivia', 'Valdivia'),
+        ('Osorno', 'Osorno'),
+        ('Puerto Montt', 'Puerto Montt'),
+        ('Coyhaique', 'Coyhaique'),
+        ('Punta Arenas', 'Punta Arenas'),
     ]
-    
+
     ciudad = forms.ChoiceField(choices=CIUDADES_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = envio
-        fields = ['direccion', 'ciudad', 'codigo_postal', 'pais', 'fecha_envio']
+        fields = ['direccion', 'ciudad', 'codigo_postal', 'pais']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['direccion'].widget.attrs.update({'class': 'form-control'})
         self.fields['ciudad'].widget.attrs.update({'class': 'form-control'})
         self.fields['codigo_postal'].widget.attrs.update({'class': 'form-control'})
-        self.fields['pais'].widget.attrs.update({'class': 'form-control'})
-        self.fields['fecha_envio'].widget.attrs.update({'class': 'form-control', 'type': 'date'})
-
+        self.fields['pais'].widget = forms.HiddenInput()
+        self.fields['pais'].initial = 'Chile'
 class PoleraForm(forms.ModelForm):
     class Meta:
         model = polera
@@ -99,3 +105,13 @@ class SoporteForm(forms.ModelForm):
             'mensaje': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese su mensaje', 'rows': 5}),
         }
 
+class ActualizarPerfilForm(forms.ModelForm):
+    class Meta:
+        model = usuario
+        fields = ['rut', 'direccion', 'numero_celular', 'fecha_nacimiento']
+        widgets = {
+            'rut': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'numero_celular': forms.TextInput(attrs={'class': 'form-control'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }

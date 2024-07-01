@@ -1,10 +1,50 @@
 {% extends "app/main/index.html" %}
 {% load static %}
+{% load widget_tweaks %}
 {% block principal %}
-
-{% endblock %}
-</body>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Resumen de Compra</h1>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <ul class="list-group mb-4">
+                {% for item in items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">{{ item.polera.nombre }}</h5>
+                        <p class="mb-1">Cantidad: {{ item.cantidad }}</p>
+                        <p class="mb-1">Precio unitario: ${{ item.polera.precio }}</p>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">${{ item.subtotal }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="total mb-4">
+                <h4>Total a pagar: <span class="text-success">${{ carrito.total }}</span></h4>
+            </div>
+            <h2 class="text-center mb-4">Detalles de Envío</h2>
+            <form method="post" action="{% url 'realizar_compra' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.direccion.label_tag }}
+                    {{ form.direccion|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.ciudad.label_tag }}
+                    {{ form.ciudad|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.codigo_postal.label_tag }}
+                    {{ form.codigo_postal|add_class:"form-control" }}
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-outline-dark btn-lg">Confirmar Compra</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script src={% static "js/bootstrap.bundle.min.js" %}></script>
-<script src={% static "css/bootstrap.min.css" %}></script>
-<link rel="stylesheet" href="{% static 'css/estilo.css' %}">
-</html>
+    <script src={% static "css/bootstrap.min.css" %}></script>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</body>
+{% endblock %}

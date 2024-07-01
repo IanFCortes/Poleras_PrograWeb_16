@@ -43,7 +43,10 @@
                         <a class="nav-link active" aria-current="page" href="{% url 'usuario_admin' %}">Usuarios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Soporte</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'ver_pedidos_admin' %}">Pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'gestionar_soporte' %}">Soporte</a>
                     </li>
                 </ul>
                 {% if user.is_authenticated %}
@@ -54,7 +57,6 @@
                         <img src="{% static 'img/usuario.png' %}" width="60" alt="Usuario">
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Ver perfil</a></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                     </ul>
                 </li>
@@ -110,7 +112,7 @@
                     <div class="card-body">
                         <h5 class="card-title">SOPORTE</h5>
                         <p class="card-text">Accede al apartado de Soporte</p>
-                        <a href="#" class="btn btn-primary">Ir</a>
+                        <a href="{% url 'gestionar_soporte' %}" class="btn btn-primary">Ir</a>
                    </div>
                 </div>
             </div>

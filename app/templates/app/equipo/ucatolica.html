@@ -7,15 +7,19 @@
     <section class="contenedor">
         <!-- Contenedor de elementos -->
         <div class="contenedor-items">
-        {% for polera in poleras %}
-        <div class="item">
+            {% for polera in poleras %}
+            <div class="item">
                 <span class="titulo-item">{{ polera.nombre }}</span>
-                <img src="{{  polera.logo.url }}" alt="{{ polera.nombre }}" class="img-item">
+                <img src="{{ polera.logo.url }}" alt="{{ polera.nombre }}" class="img-item">
                 <span class="precio-item text-white">{{ polera.precio }}</span>
                 <span class="precio-item text-white">{{ polera.talla }}</span>
-                <button class="boton-item">Agregar al Carrito</button>
+                <form method="post" action="{% url 'agregar_al_carrito' polera.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="polera_id" value="{{ polera.id }}">
+                    <button type="submit" class="boton-item">Agregar al Carrito</button>
+                </form>
             </div>
-        {% endfor %}
+            {% endfor %} 
         </div>
     </section> 
 </body>

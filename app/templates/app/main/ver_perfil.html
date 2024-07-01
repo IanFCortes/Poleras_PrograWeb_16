@@ -1,0 +1,48 @@
+{% extends "app/main/index.html" %}
+{% load static %}
+{% block principal %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Ver Perfil</h1>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h2>{{ usuario.user.username }}</h2>
+                    <p><strong>RUT:</strong> {{ usuario.rut }}</p>
+                    <p><strong>Dirección:</strong> {{ usuario.direccion }}</p>
+                    <p><strong>Número de Celular:</strong> {{ usuario.numero_celular }}</p>
+                    <p><strong>Fecha de Nacimiento:</strong> {{ usuario.fecha_nacimiento }}</p>
+                </div>
+            </div>
+            <h3 class="text-center mb-4">Actualizar Información</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="mb-3">
+                    {{ form.rut.label_tag }}
+                    {{ form.rut }}
+                </div>
+                <div class="mb-3">
+                    {{ form.direccion.label_tag }}
+                    {{ form.direccion }}
+                </div>
+                <div class="mb-3">
+                    {{ form.numero_celular.label_tag }}
+                    {{ form.numero_celular }}
+                </div>
+                <div class="mb-3">
+                    {{ form.fecha_nacimiento.label_tag }}
+                    {{ form.fecha_nacimiento }}
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Actualizar Perfil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src={% static "js/bootstrap.bundle.min.js" %}></script>
+    <script src={% static "css/bootstrap.min.css" %}></script>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</body>
+{% endblock %}
