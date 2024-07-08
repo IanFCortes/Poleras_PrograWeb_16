@@ -1,0 +1,34 @@
+{% extends "app/admin/home.html" %}
+{% load static %}
+
+{% block adminprincipal %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Administrar Seguimientos</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID Pedido</th>
+                <th>Estado</th>
+                <th>Fecha de Creación</th>
+                <th>Última Actualización</th>
+                <th>Comentario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for seguimiento in seguimientos %}
+            <tr>
+                <td>{{ seguimiento.pedido.id }}</td>
+                <td>{{ seguimiento.estado }}</td>
+                <td>{{ seguimiento.creado|date:"d/m/Y H:i" }}</td>
+                <td>{{ seguimiento.fecha_actualizacion|date:"d/m/Y H:i" }}</td>
+                <td>{{ seguimiento.comentario }}</td>
+                <td>
+                    <a href="{% url 'detalle_seguimiento_admin' seguimiento.id %}" class="btn btn-primary">Ver Detalle</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "app/main/index.html" %}
+{% load static %}
+{% block principal %}
+    <div class="container">
+        <h1>Mis Seguimientos</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Estado</th>
+                    <th>Fecha de Creación</th>
+                    <th>Última Actualización</th>
+                    <th>Comentario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for seguimiento in seguimientos %}
+                <tr>
+                    <td><a href="{% url 'detalle_seguimiento' seguimiento.id %}" class="list-group-item list-group-item-action">{{ seguimiento.pedido.id }} <strong> [VER]</td>
+                    <td>{{ seguimiento.estado }}</td>
+                    <td>{{ seguimiento.creado|date:"d/m/Y H:i" }}</td>
+                    <td>{{ seguimiento.fecha_actualizacion|date:"d/m/Y H:i" }}</td>
+                    <td>{{ seguimiento.comentario }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No hay seguimientos disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center">
+            <a href="{% url 'Inicio' %}" class="btn btn-secondary btn-lg">Volver a Inicio</a>
+        </div>
+    </div>
+</body>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'css/bootstrap.min.css' %}"></script>
+<link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+{% endblock %}

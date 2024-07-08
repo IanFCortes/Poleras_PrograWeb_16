@@ -26,9 +26,21 @@ class usuario(models.Model):
     direccion = models.CharField(max_length=30, blank=True, null=True)
     numero_celular = models.CharField(max_length=15, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
-
+    bloqueado = models.BooleanField(default=False)
+    fecha_bloqueo = models.DateTimeField(null=True, blank=True)
+    
     def __str__(self):
         return self.rut
+
+    def bloquear(self):
+        self.bloqueado = True
+        self.fecha_bloqueo = timezone.now()
+        self.save()
+
+    def desbloquear(self):
+        self.bloqueado = False
+        self.fecha_bloqueo = None
+        self.save()
 
 class carrito(models.Model):
     usuario = models.OneToOneField(usuario, on_delete=models.CASCADE, related_name='carrito')
@@ -99,3 +111,23 @@ class CompraItem(models.Model):
 
     def __str__(self):
         return f'Item de Compra {self.compra.id}: {self.item_carrito}'
+    
+
+class Seguimiento(models.Model):
+    ESTADO_CHOICES = (
+        ('pendiente', 'Pendiente'),
+        ('en proceso', 'En Proceso'),
+        ('enviado', 'Enviado'),
+        ('entregado', 'Entregado')
+    )
+
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='seguimientos')
+    estado = models.CharField(max_length=50, default='Pendiente', choices=ESTADO_CHOICES)
+    creado = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    comentario = models.TextField(blank=True, null=True)
+    detalle = models.TextField(blank=True, null=True)
+
+
+    def __str__(self):
+        return f'Seguimiento de {self.pedido.id} - {self.estado}'

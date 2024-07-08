@@ -12,11 +12,21 @@
                 <div class="col-md-4 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ usuario.user.username }}</h5>
+                            <h5 class="card-title">
+                                {{ usuario.user.username }}
+                                {% if usuario.user.is_superuser %}(admin){% endif %}
+                            </h5>
                             <p class="card-text">Rut: {{ usuario.rut }}</p>
                             <p class="card-text">Dirección: {{ usuario.direccion }}</p>
                             <p class="card-text">Número Celular: {{ usuario.numero_celular }}</p>
                             <p class="card-text">Fecha Nacimiento: {{ usuario.fecha_nacimiento }}</p>
+                            <p class="card-text">Bloqueado: {{ usuario.bloqueado }}</p>
+                            {% if usuario.bloqueado %}
+                                <p class="card-text">Fecha de Bloqueo: {{ usuario.fecha_bloqueo|date:"d/m/Y H:i" }}</p>
+                                <a href="{% url 'desbloquear_usuario' usuario.pk %}" class="btn btn-success">Desbloquear</a>
+                            {% else %}
+                                <a href="{% url 'bloquear_usuario' usuario.pk %}" class="btn btn-warning">Bloquear</a>
+                            {% endif %}
                             <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-primary">Editar</a>
                             <form method="post" action="{% url 'eliminar_usuario' usuario.pk %}" class="d-inline">
                                 {% csrf_token %}

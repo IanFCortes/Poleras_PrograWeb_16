@@ -1,0 +1,27 @@
+{% extends "app/admin/home.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block adminprincipal %}
+<div class="container mt-5">
+    <h2>Detalle de Seguimiento</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Pedido {{ seguimiento.pedido.id }}</h5>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    {{ form.estado|add_class:"form-control" }}
+                </div>
+                <div class="form-group">
+                    <label for="comentario">Comentario</label>
+                    {{ form.comentario|add_class:"form-control" }}
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Guardar Cambios</button>
+                <a href="{% url 'seguimiento_admin' %}" class="btn btn-secondary mt-3">Volver a Seguimientos</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

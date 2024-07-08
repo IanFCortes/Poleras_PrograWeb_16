@@ -1,5 +1,5 @@
 # PENDIENTE
-from .models import usuario, envio, polera, equipo, soporte, envio
+from .models import usuario, envio, polera, equipo, soporte, envio, Seguimiento
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -86,15 +86,22 @@ class EquipoForm(forms.ModelForm):
         }
 
 class UsuarioForm(forms.ModelForm):
+    admin = forms.BooleanField(required=False, label="Convertir a Admin")
+
     class Meta:
         model = usuario
-        fields = ['rut', 'direccion', 'numero_celular', 'fecha_nacimiento']
+        fields = ['rut', 'direccion', 'numero_celular', 'fecha_nacimiento', 'admin']
         widgets = {
             'rut': forms.TextInput(attrs={'class': 'form-control'}),
             'direccion': forms.TextInput(attrs={'class': 'form-control'}),
             'numero_celular': forms.TextInput(attrs={'class': 'form-control'}),
             'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.user.is_superuser:
+            self.fields.pop('admin')
 
 class SoporteForm(forms.ModelForm):
     class Meta:
@@ -115,3 +122,8 @@ class ActualizarPerfilForm(forms.ModelForm):
             'numero_celular': forms.TextInput(attrs={'class': 'form-control'}),
             'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
+
+class SeguimientoForm(forms.ModelForm):
+    class Meta:
+        model = Seguimiento
+        fields = ['estado', 'comentario']

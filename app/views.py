@@ -1,20 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db import transaction
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
-from django.urls import reverse_lazy
-from .forms import RegistroForm, LoginForm, PoleraForm, EquipoForm, UsuarioForm, SoporteForm, EnvioForm, ActualizarPerfilForm
-from .models import equipo, polera, usuario, soporte, carrito, ItemCarrito, Compra, CompraItem, ItemPedido, Pedido
+from django.urls import reverse_lazy, reverse
+from .forms import RegistroForm, LoginForm, PoleraForm, EquipoForm, UsuarioForm, SoporteForm, EnvioForm, ActualizarPerfilForm, SeguimientoForm
+from .models import equipo, polera, usuario, soporte, carrito, ItemCarrito, Compra, CompraItem, ItemPedido, Pedido, Seguimiento
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.db import IntegrityError
-import json
-from django.http import JsonResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import PermissionDenied
+
+
 
 
 # Create your views here.
+def check_bloqueado(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if hasattr(request.user, 'usuario') and request.user.usuario.bloqueado:
+            raise PermissionDenied("Tu cuenta está bloqueada.")
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 def inicio(request):
     return render(request,'app/main/index.html')
@@ -135,8 +141,7 @@ def usuarioadmin(request):
 def equipoadmin(request):
     return render(request,'app/admin/equipoadmin.html')
 
-def cambio(request):
-    return render(request, 'app/main/cambio.html')
+
 
 class CustomLoginView(LoginView):
     form_class = LoginForm
@@ -166,6 +171,7 @@ def logout_view(request):
 
 
 
+@check_bloqueado
 def polera_admin(request):
     if not request.user.is_superuser:
         return redirect('Inicio')  
@@ -177,6 +183,7 @@ def polera_admin(request):
         poleras = polera.objects.all()
     return render(request, 'app/admin/poleradmin.html', {'poleras': poleras, 'equipos': equipos})
 
+@check_bloqueado
 def editar_polera(request, pk=None):
     if not request.user.is_superuser:
         return redirect('Inicio')  
@@ -195,6 +202,7 @@ def editar_polera(request, pk=None):
     
     return render(request, 'app/admin/editarpolera.html', {'form': form, 'polera': polera_obj})
 
+@check_bloqueado
 def eliminar_polera(request, pk):
     if not request.user.is_superuser:
         return redirect('Inicio')  
@@ -204,12 +212,14 @@ def eliminar_polera(request, pk):
 
 #crud equipo
 
+@check_bloqueado
 def equipo_admin(request):
     if not request.user.is_superuser:
         return redirect('Inicio')  
     equipos = equipo.objects.all()
     return render(request, 'app/admin/equipoadmin.html', {'equipos': equipos})
 
+@check_bloqueado
 def editar_equipo(request, pk=None):
     if not request.user.is_superuser:
         return redirect('Inicio')  
@@ -228,6 +238,7 @@ def editar_equipo(request, pk=None):
     
     return render(request, 'app/admin/editarequipo.html', {'form': form, 'equipo': equipo_obj})
 
+@check_bloqueado
 def eliminar_equipo(request, pk):
     if not request.user.is_superuser:
         return redirect('Inicio')  
@@ -237,12 +248,15 @@ def eliminar_equipo(request, pk):
 
 #usuario
 
+@check_bloqueado
 def usuario_admin(request):
     if not request.user.is_superuser:
         return redirect('Inicio')  
     usuarios = usuario.objects.all()
     return render(request, 'app/admin/usuarioadmin.html', {'usuarios': usuarios})
 
+@check_bloqueado
+@login_required
 def editar_usuario(request, pk):
     if not request.user.is_superuser:
         return redirect('Inicio')  
@@ -250,13 +264,23 @@ def editar_usuario(request, pk):
     if request.method == 'POST':
         form = UsuarioForm(request.POST, instance=usuario_obj)
         if form.is_valid():
-            form.save()
+            usuario_form = form.save(commit=False)
+            if form.cleaned_data['admin']:
+                usuario_obj.user.is_superuser = True
+                usuario_obj.user.is_staff = True  
+            else:
+                usuario_obj.user.is_superuser = False
+                usuario_obj.user.is_staff = False
+            usuario_obj.user.save()
+            usuario_form.save()
+            messages.success(request, 'Usuario actualizado exitosamente.')
             return redirect('usuario_admin')
     else:
         form = UsuarioForm(instance=usuario_obj)
-    
-    return render(request, 'app/admin/usuarioeditar.html', {'form': form, 'usuario': usuario_obj})
 
+    return render(request, 'app/admin/usuarioeditar.html', {'form': form, 'usuario': usuario_obj})
+@check_bloqueado
+@login_required
 def registrar_usuario(request):
     if not request.user.is_superuser:
         return redirect('Inicio')  
@@ -269,13 +293,46 @@ def registrar_usuario(request):
         form = RegistroForm()
     return render(request, 'app/admin/usuarioeditar.html', {'form': form, 'usuario': None})
 
-def eliminar_usuario(request, pk):
+@login_required
+def bloquear_usuario(request, pk):
     if not request.user.is_superuser:
-        return redirect('Inicio')  
+        return redirect('Inicio')
+    
     usuario_obj = get_object_or_404(usuario, pk=pk)
-    usuario_obj.delete()
+    
+    usuario_obj.bloquear()
+    messages.success(request, 'El usuario ha sido bloqueado exitosamente.')
     return redirect('usuario_admin')
 
+@login_required
+def desbloquear_usuario(request, pk):
+    if not request.user.is_superuser:
+        return redirect('Inicio')
+    
+    usuario_obj = get_object_or_404(usuario, pk=pk)
+    
+    usuario_obj.desbloquear()
+    messages.success(request, 'El usuario ha sido desbloqueado exitosamente.')
+    return redirect('usuario_admin')
+
+
+@login_required
+def eliminar_usuario(request, pk):
+    if not request.user.is_superuser:
+        return redirect('Inicio')
+    
+    usuario_obj = get_object_or_404(usuario, pk=pk)
+
+    if Pedido.objects.filter(usuario=usuario_obj).exists():
+        usuario_obj.bloquear()
+        messages.success(request, 'El usuario ha sido bloqueado porque tiene pedidos asociados.')
+    else:
+        usuario_obj.delete()
+        messages.success(request, 'El usuario ha sido eliminado exitosamente.')
+    
+    return redirect('usuario_admin')
+
+@check_bloqueado
 @login_required
 def enviar_soporte(request):
     if request.method == 'POST':
@@ -301,6 +358,7 @@ def soporte_view(request):
 def soporte_exito_view(request):
     return render(request, 'app/main/soporte_exito.html')
 
+@check_bloqueado
 @login_required
 def agregar_al_carrito(request, polera_id):
     polera_obj = get_object_or_404(polera, id=polera_id)
@@ -314,7 +372,7 @@ def agregar_al_carrito(request, polera_id):
     return redirect('ver_carrito')
 
 
-
+@check_bloqueado
 @login_required
 def realizar_compra(request):
     usuario_obj = request.user.usuario
@@ -336,6 +394,7 @@ def realizar_compra(request):
                 fecha_compra=timezone.now(),
             )
 
+            detalle_items = []
             for item in items_carrito:
                 ItemPedido.objects.create(
                     pedido=pedido,
@@ -343,9 +402,17 @@ def realizar_compra(request):
                     cantidad=item.cantidad,
                     precio=item.precio_total
                 )
+                detalle_items.append(f'{item.cantidad} x {item.polera.nombre}')
                 item.delete()
 
             carrito_obj.items.all().delete()
+
+            Seguimiento.objects.create(
+                pedido=pedido,
+                estado='pendiente',
+                comentario='Pedido realizado correctamente.',
+                detalle='\n'.join(detalle_items)
+            )
 
             response = render(request, 'app/acciones/compra_exito.html', {'pedido': pedido, 'envio': envio_obj})
             response.delete_cookie('carrito')
@@ -371,6 +438,9 @@ def realizar_compra(request):
     }
     return render(request, 'app/acciones/realizar_compra.html', context)
 
+
+
+@check_bloqueado
 @login_required
 def ver_carrito(request):
     carrito_obj, created = carrito.objects.get_or_create(usuario=request.user.usuario)
@@ -382,6 +452,7 @@ def ver_carrito(request):
     }
     return render(request, 'app/acciones/ver_carrito.html', context)
 
+@check_bloqueado
 @login_required
 def mis_pedidos(request):
     usuario_obj = request.user.usuario
@@ -392,6 +463,7 @@ def mis_pedidos(request):
     }
     return render(request, 'app/acciones/mis_pedidos.html', context)
 
+@check_bloqueado
 @login_required
 def ver_perfil(request):
     usuario_obj = request.user.usuario
@@ -410,6 +482,7 @@ def ver_perfil(request):
     }
     return render(request, 'app/main/ver_perfil.html', context)
 
+@check_bloqueado
 @login_required
 def ver_pedidos_admin(request):
     if not request.user.is_superuser:
@@ -423,6 +496,7 @@ def ver_pedidos_admin(request):
     return render(request, 'app/admin/ver_pedidos_admin.html', context)
 
 
+@check_bloqueado
 @login_required
 def detalle_pedido_admin(request, pedido_id):
     if not request.user.is_superuser:
@@ -436,3 +510,54 @@ def detalle_pedido_admin(request, pedido_id):
         'items': items,
     }
     return render(request, 'app/admin/detalle_pedido_admin.html', context)
+
+@check_bloqueado
+@login_required
+def mis_seguimientos(request):
+    usuario_obj = request.user.usuario
+    seguimientos = Seguimiento.objects.filter(pedido__usuario=usuario_obj).order_by('-fecha_actualizacion')
+
+    context = {
+        'seguimientos': seguimientos,
+    }
+    return render(request, 'app/acciones/mis_seguimientos.html', context)
+
+@check_bloqueado
+@login_required
+def detalle_seguimiento(request, seguimiento_id):
+    seguimiento = get_object_or_404(Seguimiento, id=seguimiento_id)
+    pedido_usuario_rut = seguimiento.pedido.usuario.rut.strip() if seguimiento.pedido.usuario.rut else ''
+    user_rut = request.user.usuario.rut.strip() if request.user.usuario.rut else ''
+    
+    print(f"pedido_usuario_rut: '{pedido_usuario_rut}'")
+    print(f"user_rut: '{user_rut}'")
+    print(f"request.user.is_staff: {request.user.is_staff}")
+    
+    if pedido_usuario_rut != user_rut and not request.user.is_staff:
+        print("PermissionDenied triggered")
+        raise PermissionDenied
+
+    context = {
+        'seguimiento': seguimiento,
+    }
+    return render(request, 'app/acciones/detalle_seguimiento.html', context)
+
+@check_bloqueado
+@staff_member_required
+def seguimiento_admin(request):
+    seguimientos = Seguimiento.objects.all()
+    return render(request, 'app/admin/seguimiento_admin.html', {'seguimientos': seguimientos})
+
+@check_bloqueado
+@staff_member_required
+def detalle_seguimiento_admin(request, seguimiento_id):
+    seguimiento = get_object_or_404(Seguimiento, pk=seguimiento_id)
+    if request.method == 'POST':
+        form = SeguimientoForm(request.POST, instance=seguimiento)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('seguimiento_admin'))
+    else:
+        form = SeguimientoForm(instance=seguimiento)
+    return render(request, 'app/admin/detalle_seguimiento_admin.html', {'form': form, 'seguimiento': seguimiento})
+
