@@ -1,0 +1,22 @@
+.card {
+    border-radius: 0.75rem;
+}
+
+.img-thumbnail {
+    border: none;
+    border-radius: 0.375rem;
+}
+
+.btn-outline-dark {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-dark:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.text-muted {
+    color: #6c757d;
+}
