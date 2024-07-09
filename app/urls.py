@@ -50,7 +50,7 @@ urlpatterns = [
     path('adm/seguimiento/', seguimiento_admin, name='seguimiento_admin'),
     path('adm/seguimiento/<int:seguimiento_id>/', detalle_seguimiento_admin, name='detalle_seguimiento_admin'),
     path('bloquear_usuario/<int:pk>/', bloquear_usuario, name='bloquear_usuario'),
-path('desbloquear_usuario/<int:pk>/', desbloquear_usuario, name='desbloquear_usuario'),
+    path('desbloquear_usuario/<int:pk>/', desbloquear_usuario, name='desbloquear_usuario'),
 
 ]
 
